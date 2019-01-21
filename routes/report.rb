@@ -557,6 +557,14 @@ get '/report/:id/udo/:udo_id/edit' do
   @report = get_report(id)
   return 'No Such Report' if @report.nil?
 
+  # attachments autocomplete work
+  temp_attaches = Attachments.all(report_id: params[:id])
+  @attaches = []
+  temp_attaches.each do |ta|
+    next unless ta.description =~ /\.png$/i || ta.description =~ /\.jpg$/i || ta.description =~ /\.jpeg$/i
+    @attaches.push(ta.description)
+  end
+  
   # By asking only udos for the report we have access to, we're safe from
   # edit by arbitrary user
   udos = UserDefinedObjects.all(report_id: id, id: udo_id)

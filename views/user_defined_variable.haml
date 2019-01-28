@@ -69,3 +69,32 @@
     %input.btn.btn-default{ :type => "submit", :value => "Save" }
     %a.btn.btn-default{ :href => "/report/#{@report.id}/additional_features" }
       Cancel
+
+-if @attaches
+  - attachments=''
+  - @attaches.each do |attach|
+    - attachments = attachments + "{name: '#{attach}'},"
+  / autosuggest code is care of bootstrap-suggest.js
+  :javascript
+    var files = [
+      #{attachments}
+    ];
+    var param_ids = '';
+    var param_textboxes = document.querySelectorAll('[id^="variable_data_"]');
+    for (var box of param_textboxes) {
+        param_ids += "#" + box.id + ", ";
+    }
+    var suggestSettings =
+    $(param_ids.slice(0, -2)).suggest('[', {
+      data: files,
+      filter: {
+        casesensitive: true,
+        limit: 10
+      },
+      map: function(file) {
+        return {
+          value: '!!'+file.name+'!!]',
+          text: '<strong>'+file.name+'</strong>'
+          }
+      }
+    })

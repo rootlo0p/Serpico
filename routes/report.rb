@@ -633,6 +633,14 @@ get '/report/:id/user_defined_variables' do
   id = params[:id]
   @report = get_report(id)
 
+   # attachments autocomplete work
+  temp_attaches = Attachments.all(report_id: id)
+  @attaches = []
+  temp_attaches.each do |ta|
+    next unless ta.description =~ /\.png$/i || ta.description =~ /\.jpg$/i || ta.description =~ /\.jpeg$/i
+    @attaches.push(ta.description)
+  end
+  
   if @report.user_defined_variables
     @user_variables = JSON.parse(@report.user_defined_variables)
 
